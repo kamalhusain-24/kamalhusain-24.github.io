@@ -449,6 +449,559 @@ tailwind.config = {
     -->
     <script src="config.js"></script>
     <script type="module" src="app.js"></script>
+	
+	
+    <script>
+        // -------------------------
+        // F12 / DevTools ব্লক করা
+        // -------------------------
+        document.addEventListener("keydown", function(e) {
+            if(e.key === "F12" || 
+               (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+               (e.ctrlKey && e.key === "U")) {
+                e.preventDefault();
+                alert("This action is disabled on this website.");
+            }
+        });
+
+        // -------------------------
+        // রাইট-ক্লিক ব্লক করা
+        // -------------------------
+        document.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+            alert("Right click is disabled on this website.");
+        });
+
+        // -------------------------
+        // কপি/কাট/সিলেকশন ব্লক
+        // -------------------------
+        document.addEventListener("copy", function(e) { e.preventDefault(); alert("Copying content is disabled."); });
+        document.addEventListener("cut", function(e) { e.preventDefault(); });
+        document.addEventListener("selectstart", function(e){ e.preventDefault(); });
+
+        // -------------------------
+        // অন্য ডোমেইন থেকে লোড রোধ করা
+        // -------------------------
+        const allowedDomain = "https://kamalhusain-24.github.io"; // এখানে নিজের ডোমেইন লিখবে
+        if (!document.referrer.includes(allowedDomain) && document.referrer !== "") {
+            document.body.innerHTML = "<h1>Access Denied!</h1>";
+            window.stop();
+        }
+    </script>
+
+    <script src="protect.js"></script>
+
+    <script src="/path/to/anti-inspect.js"></script>
+    <script src="/app.js" defer></script>
+
+    <b:if cond='data:blog.pageType != &quot;preview&quot;'>
+<script type="text/javascript">
+// Blogger Anti-Inspect Suite v3.0 - AGGRESSIVE MODE ENABLED
+(function(){
+  'use strict';
+
+  // == কনফিগারেশন শুরু ==
+  // Aggressive Blocking সক্রিয় করা হয়েছে।
+  const CFG = {
+    showOverlay: true, 
+    reloadOnClose: true, 
+    overlayHTML: '🚫 <b>Security Alert</b><br>Access Denied. Developer tools are prohibited.',
+    overlayId: 'security-suite-overlay-final',
+    
+    // ** শক্তিশালী ব্লকিং অপশন সক্রিয় **
+    useAggressiveBlocking: true, // true করা হয়েছে। ব্রাউজার ফ্রিজ/হ্যাং হয়ে যাবে।
+    clearConsole: false // এটি false রাখাই ভালো, কারণ aggressive mode নিজেই যথেষ্ট শক্তিশালী।
+  };
+  // == কনফিগারেশন শেষ ==
+
+
+  // == মূল কোড শুরু (এখানে কোনো কিছু পরিবর্তন করবেন না) ==
+  const _0xf4a = ['body','appendChild','createElement','style','innerHTML','overflow','display','getElementById','contextmenu','keydown','preventDefault','keyCode','ctrlKey','shiftKey','key','toUpperCase','includes','U','abs','outerWidth','innerWidth','outerHeight','innerHeight','now','reload','flex','hidden','none','fixed','inset','0','flex','alignItems','center','justifyContent','center','system-ui,Arial,sans-serif','20px','1.6','center','rgba(0,0,0,.96)','#ff6b6b','48px','blur(10px)','not-allowed','999999999','childList','removedNodes','id','log','constructor','while(true){debugger;}'];
+  function _0x2b1(_0x123){return _0xf4a[_0x123];}
+
+  let devOpen = false;
+  let overlay;
+
+  function showOverlay() {
+    if (!CFG.showOverlay) return;
+    if (!document[_0x2b1(7)](CFG.overlayId)) {
+      overlay = document[_0x2b1(2)]('div');
+      overlay[_0x2b1(4)] = CFG.overlayHTML;
+      overlay.id = CFG.overlayId;
+      Object.assign(overlay[_0x2b1(3)], {
+        position: _0x2b1(28), inset: _0x2b1(30), display: _0x2b1(31),
+        alignItems: _0x2b1(32), justifyContent: _0x2b1(33), fontFamily: _0x2b1(34),
+        fontSize: _0x2b1(35), lineHeight: _0x2b1(36), textAlign: _0x2b1(37),
+        background: _0x2b1(38), color: _0x2b1(39), padding: _0x2b1(40),
+        backdropFilter: _0x2b1(41), cursor: _0x2b1(42), zIndex: _0x2b1(43)
+      });
+      document[_0x2b1(0)][_0x2b1(1)](overlay);
+    } else {
+      overlay = document[_0x2b1(7)](CFG.overlayId);
+    }
+    overlay[_0x2b1(3)][_0x2b1(6)] = _0x2b1(25);
+    document[_0x2b1(0)][_0x2b1(3)][_0x2b1(5)] = _0x2b1(26);
+  }
+
+  function hideOverlay() {
+    if (overlay) { overlay[_0x2b1(3)][_0x2b1(6)] = _0x2b1(27); }
+    document[_0x2b1(0)][_0x2b1(3)][_0x2b1(5)] = '';
+  }
+
+  function detectDevTools() {
+    if (CFG.useAggressiveBlocking) {
+      try { (function(){return false;}[_0x2b1(49)](_0x2b1(50))()); } catch (e) {}
+    }
+    
+    const threshold = 160;
+    const wdiff = Math[_0x2b1(18)](window[_0x2b1(19)] - window[_0x2b1(20)]);
+    const hdiff = Math[_0x2b1(18)](window[_0x2b1(21)] - window[_0x2b1(22)]);
+    let opened = wdiff > threshold || hdiff > threshold;
+    
+    const t0 = performance[_0x2b1(23)]();
+    debugger;
+    const dt = performance[_0x2b1(23)]() - t0;
+    if (dt > 100) opened = true;
+
+    if (opened && !devOpen) {
+      devOpen = true;
+      showOverlay();
+    } else if (!opened && devOpen) {
+      devOpen = false;
+      hideOverlay();
+      if (CFG.reloadOnClose) location[_0x2b1(24)]();
+    }
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === _0x2b1(44) && mutation[_0x2b1(45)].length > 0) {
+        mutation[_0x2b1(45)].forEach((node) => {
+          if (node.id === CFG.overlayId) { showOverlay(); }
+        });
+      }
+    });
+  });
+  observer.observe(document[_0x2b1(0)], { childList: true });
+
+  document.addEventListener(_0x2b1(8), e => e[_0x2b1(10)]());
+  document.addEventListener(_0x2b1(9), e => {
+    if (e[_0x2b1(11)] === 123 ||
+       (e[_0x2b1(12)] && e[_0x2b1(13)] && ['I','J','C'][_0x2b1(16)](e[_0x2b1(14)][_0x2b1(15)]())) ||
+       (e[_0x2b1(12)] && e[_0x2b1(14)][_0x2b1(15)]() === _0x2b1(17))) {
+      e[_0x2b1(10)]();
+      showOverlay();
+    }
+  });
+
+  setInterval(detectDevTools, 700);
+  if(CFG.clearConsole){
+    setInterval(() => { 
+      console.clear(); 
+      console[_0x2b1(48)]('This is a protected area. Access is restricted.'); 
+    }, 1000);
+  }
+})();
+</script>
+</b:if>
+
+
+
+<!-- Protection Loader: paste into Blogger template (head or before </body>) -->
+<script type="text/javascript">
+(function () {
+  'use strict';
+
+  // === CONFIG: Replace these with values produced by helper tool ===
+  // KEY: single-byte XOR key (0-255) as integer
+  var KEY = 197; // <-- replace with helper output
+  // encryptedChunks: array of base64(XORed bytes) strings (produced by helper)
+  var encryptedChunks = [
+    // DEMO chunk (replace with helper output)
+    "Gx8fFw=="
+  ];
+  // integrityHash: hex SHA-256 of original source string (lowercase hex) - produced by helper
+  var integrityHash = "d41d8cd98f00b204e9800998ecf8427e"; // <-- replace with helper output
+
+  // internal tag to mark injected script nodes
+  var INTEGRITY_ATTR = 'data-protect-v2';
+
+  // === UTIL: base64 -> Uint8Array ===
+  function base64ToBytes(b64) {
+    try {
+      var binary = atob(b64);
+      var len = binary.length;
+      var bytes = new Uint8Array(len);
+      for (var i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes;
+    } catch (e) {
+      return new Uint8Array(0);
+    }
+  }
+
+  // === Decrypt chunk (XOR single-byte key) ===
+  function decryptChunk(b64, key) {
+    var bytes = base64ToBytes(b64);
+    var out = new Array(bytes.length);
+    for (var i = 0; i < bytes.length; i++) {
+      out[i] = String.fromCharCode(bytes[i] ^ key);
+    }
+    return out.join('');
+  }
+
+  // === Assemble decrypted source from chunks ===
+  function assembleSource() {
+    try {
+      var src = '';
+      for (var i = 0; i < encryptedChunks.length; i++) {
+        src += decryptChunk(encryptedChunks[i], KEY);
+      }
+      return src;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // === Compute SHA-256 hex of string (returns Promise<string>) ===
+  function sha256Hex(str) {
+    if (!window.crypto || !window.crypto.subtle) {
+      return Promise.resolve('');
+    }
+    var enc = new TextEncoder().encode(str);
+    return window.crypto.subtle.digest('SHA-256', enc).then(function (hash) {
+      var h = Array.prototype.map.call(new Uint8Array(hash), function (b) {
+        return ('00' + b.toString(16)).slice(-2);
+      }).join('');
+      return h;
+    });
+  }
+
+  // === Inject script via Blob URL and set integrity attr ===
+  function injectScript(code) {
+    try {
+      var blob = new Blob([code], { type: 'text/javascript' });
+      var url = URL.createObjectURL(blob);
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.setAttribute(INTEGRITY_ATTR, '1');
+      s.src = url;
+      // append to documentElement to avoid CSP inline restrictions in some templates
+      document.documentElement.appendChild(s);
+      s.onload = function () { try { URL.revokeObjectURL(url); } catch (e) { } };
+      return true;
+    } catch (e) {
+      try {
+        (new Function(code))();
+        return true;
+      } catch (err) {
+        console.error('Protection loader: failed to inject.', err);
+        return false;
+      }
+    }
+  }
+
+  // === Anti-inspect & tamper protections (improved) ===
+  var protector = (function () {
+    var devtoolsDetected = false;
+    var lastOuterW = window.outerWidth || screen.width;
+    var lastOuterH = window.outerHeight || screen.height;
+    var lastPerf = performance.now();
+
+    // multiple signals combined (resize, timing stall, console override, debugger toString)
+    function detectDevTools() {
+      try {
+        // 1) Window outer size big change
+        var w = window.outerWidth || screen.width;
+        var h = window.outerHeight || screen.height;
+        if (Math.abs(w - lastOuterW) > 120 || Math.abs(h - lastOuterH) > 120) {
+          lastOuterW = w; lastOuterH = h;
+          return true;
+        }
+
+        // 2) Busy-loop timing stall (debugger pauses)
+        var t0 = performance.now();
+        // small busy loop (cheap)
+        for (var i = 0; i < 200000; i++) { /* noop */ }
+        var dt = performance.now() - t0;
+        if (dt > 120) return true;
+
+        // 3) Overwritten console properties (simple)
+        if (typeof console === 'object' && console) {
+          if (typeof console.firebug !== 'undefined') return true;
+          // console inspection tamper check
+          var old = console.log;
+          try {
+            // in some devtools console.log may be a getter or wrapped
+            if (Object.prototype.toString.call(old) !== '[object Function]') return true;
+          } catch (e) {
+            return true;
+          }
+        }
+
+        // 4) Debugger function toString detection (some tools change Function.prototype.toString)
+        var f = function () { /* test */ };
+        try {
+          var s = Function.prototype.toString.call(f);
+          if (typeof s !== 'string' || s.indexOf('function') === -1) return true;
+        } catch (e) {
+          return true;
+        }
+
+        return false;
+      } catch (e) {
+        // if any error during detection, err on safe side
+        return false;
+      }
+    }
+
+    function onDetect() {
+      if (devtoolsDetected) return;
+      devtoolsDetected = true;
+      try {
+        // overlay
+        var ov = document.createElement('div');
+        ov.id = 'protect-overlay';
+        ov.style.position = 'fixed';
+        ov.style.left = '0';
+        ov.style.top = '0';
+        ov.style.right = '0';
+        ov.style.bottom = '0';
+        ov.style.zIndex = '2147483647';
+        ov.style.background = 'rgba(0,0,0,0.92)';
+        ov.style.color = '#fff';
+        ov.style.display = 'flex';
+        ov.style.alignItems = 'center';
+        ov.style.justifyContent = 'center';
+        ov.style.fontSize = '18px';
+        ov.style.fontFamily = 'Arial, sans-serif';
+        ov.style.textAlign = 'center';
+        ov.textContent = 'Developer tools detected — page functionality restricted.';
+        // add small dismiss (non-destructive) so site owner can re-enable if accidentally triggered
+        var msg = document.createElement('div');
+        msg.style.maxWidth = '80%';
+        msg.style.lineHeight = '1.4';
+        msg.innerHTML = '<div style="margin-bottom:8px;">Developer tools detected — page functionality restricted.</div>' +
+                        '<div style="font-size:12px;opacity:0.9">Contact site admin if this is an error.</div>';
+        ov.innerHTML = '';
+        ov.appendChild(msg);
+        document.documentElement.appendChild(ov);
+
+        // remove any injected scripts (best-effort)
+        var scripts = document.querySelectorAll('script[' + INTEGRITY_ATTR + ']');
+        scripts.forEach(function (s) { try { s.parentNode && s.parentNode.removeChild(s); } catch (e) { } });
+
+        // disable major interactive events
+        window.addEventListener('keydown', blockKey, true);
+        window.addEventListener('contextmenu', blockContext, true);
+        // freeze pointer events on body (so clicks don't work)
+        try { document.documentElement.style.pointerEvents = 'none'; } catch (e) { }
+
+      } catch (e) { }
+    }
+
+    // block keys function (F12, Ctrl+Shift+I/J/C, Ctrl+U)
+    function blockKey(e) {
+      if (!e) e = window.event;
+      var key = e.key || e.keyIdentifier || e.which;
+      var keyStr = ('' + key).toLowerCase();
+      if (keyStr === 'f12' || (e.ctrlKey && e.key && e.key.toLowerCase() === 'u') || (e.ctrlKey && e.shiftKey && (e.key && (e.key.toLowerCase() === 'i' || e.key.toLowerCase() === 'j' || e.key.toLowerCase() === 'c')))) {
+        try { e.preventDefault(); e.stopPropagation(); } catch (err) { }
+      }
+    }
+
+    function blockContext(e) {
+      try { e.preventDefault(); e.stopPropagation(); } catch (err) { }
+    }
+
+    // MutationObserver: if our injected script is removed, try to restore (self-heal)
+    var observer = new MutationObserver(function (mutations) {
+      try {
+        var found = !!document.querySelector('script[' + INTEGRITY_ATTR + ']');
+        if (!found) {
+          // attempt to re-inject after short random delay
+          setTimeout(function () {
+            var code = assembleSource();
+            if (code && code.length > 8) injectScript(code);
+          }, 250 + Math.floor(Math.random() * 350));
+        }
+      } catch (e) { }
+    });
+
+    observer.observe(document.documentElement || document, { childList: true, subtree: true });
+
+    // public start monitoring
+    function start() {
+      // periodic check
+      setInterval(function () {
+        try {
+          if (detectDevTools()) onDetect();
+        } catch (e) { }
+      }, 700);
+
+      // keyboard/context handlers (lightweight)
+      window.addEventListener('keydown', blockKey, true);
+      window.addEventListener('contextmenu', blockContext, true);
+    }
+
+    // expose onDetect for external use
+    return { start: start, onDetect: onDetect };
+  })();
+
+  // === INIT: assemble, verify hash, inject, start protections ===
+  (function init() {
+    try {
+      var code = assembleSource();
+      if (!code || code.length < 8) {
+        console.warn('Protection loader: no decrypted payload found.');
+        // still start protector to prevent easy inspection
+        protector.start();
+        return;
+      }
+
+      sha256Hex(code).then(function (hex) {
+        // if integrityHash provided and matches, execute; else fail-safe
+        if (integrityHash && typeof integrityHash === 'string' && integrityHash.length >= 8) {
+          if (hex === integrityHash.toLowerCase()) {
+            injectScript(code);
+          } else {
+            console.warn('Protection loader: integrity check failed.');
+            // optionally show overlay or block
+            protector.onDetect();
+          }
+        } else {
+          // no integrity hash: still inject but warn
+          injectScript(code);
+        }
+        // always start protector monitoring after injection attempt
+        protector.start();
+      }).catch(function (e) {
+        console.warn('Protection loader: hash verify error', e);
+        // fallback: inject anyway
+        injectScript(code);
+        protector.start();
+      });
+
+    } catch (e) {
+      console.error('Protection loader init error', e);
+      protector.start();
+    }
+  })();
+
+})();
+</script>
+
+<!--
+  Apex‑Shield v12 MAX — Anti‑Inspect / Tamper‑Resistant (Maximum Mode)
+  ⚡ Hardened for maximum obstruction against DevTools + source tampering.
+  ❗ Note: Nothing is 100% foolproof against local attackers, but this raises the cost.
+-->
+<script>
+(function(){
+  'use strict';
+
+  const D = document;
+  const W = window;
+  const root = D.documentElement;
+
+  const CFG = Object.freeze({
+    mode: 'aggressive',         // always aggressive
+    showOverlay: true,          // overlay ON when suspect
+    keyGuards: true,            // block all shortcuts
+    debugParam: 'debug',
+    pollShort: 200,
+    pollLong: 500,
+    actions: Object.freeze({
+      blur: true,
+      freezeUI: true,
+      redirect: true,
+      redirectTo: '/about:blank',
+    }),
+  });
+
+  try { if (new URLSearchParams(location.search).get(CFG.debugParam)==='1') return; } catch(e) {}
+
+  // Overlay
+  let overlay;
+  function ensureOverlay(){
+    if (overlay) return;
+    overlay = D.createElement('div');
+    overlay.id='apexShieldOverlay';
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:2147483647;pointer-events:none;opacity:0;transition:opacity .1s ease';
+    D.body ? D.body.appendChild(overlay) : D.addEventListener('DOMContentLoaded',()=>D.body.appendChild(overlay));
+  }
+  function overlayOn(){ ensureOverlay(); overlay.style.opacity='1'; }
+
+  // Freeze UI
+  let freezeStyle;
+  function freezeUI(){
+    if (freezeStyle) return;
+    freezeStyle = D.createElement('style');
+    freezeStyle.textContent = `html,body{overflow:hidden!important}*{user-select:none!important;pointer-events:none!important}`;
+    D.head.appendChild(freezeStyle);
+  }
+
+  // Guards
+  function block(e){ e.preventDefault(); e.stopPropagation(); return false; }
+  function installGuards(){
+    D.addEventListener('keydown',block,true);
+    D.addEventListener('contextmenu',block,true);
+    D.addEventListener('copy',block,true);
+    D.addEventListener('cut',block,true);
+    D.addEventListener('paste',block,true);
+    D.addEventListener('dragstart',block,true);
+    D.addEventListener('selectstart',block,true);
+  }
+
+  // Trip
+  let tripped=false;
+  function trip(reason){
+    if(tripped) return; tripped=true;
+    try{console.clear();}catch(e){}
+    overlayOn();
+    freezeUI();
+    if(CFG.actions.redirect) try{location.replace(CFG.actions.redirectTo);}catch(e){}
+  }
+
+  // Probes
+  function sizeProbe(){
+    if ((W.outerWidth-W.innerWidth)+(W.outerHeight-W.innerHeight) > 200) trip('size');
+  }
+  function timingProbe(){
+    const t0=performance.now();
+    try{debugger;}catch(e){}
+    if(performance.now()-t0>150) trip('debugger');
+  }
+  function consoleProbe(){
+    const x=/x/;
+    x.toString=function(){trip('console');return''};
+    console.log(x);
+  }
+  function toolsProbe(){
+    if(W.__REACT_DEVTOOLS_GLOBAL_HOOK__||W.__VUE_DEVTOOLS_GLOBAL_HOOK__) trip('fw');
+    try{const t0=performance.now();eval('void(0)');if(performance.now()-t0>40) trip('eval');}catch(e){}
+  }
+  function baitProbe(){
+    try{Object.defineProperty(Image.prototype,'id',{get(){trip('bp');return'x'}});}catch(e){}
+    new Image().id='probe';
+  }
+
+  // Self-healing
+  const mo=new MutationObserver(()=>{
+    if(tripped){ if(!D.getElementById('apexShieldOverlay')){overlay=null;overlayOn();} if(!freezeStyle) freezeUI(); }
+  });
+  D.addEventListener('DOMContentLoaded',()=>mo.observe(D.documentElement,{childList:true,subtree:true}));
+
+  // Run aggressive
+  installGuards();
+  setInterval(sizeProbe,CFG.pollShort);
+  setInterval(consoleProbe,CFG.pollShort);
+  setInterval(timingProbe,CFG.pollShort);
+  setInterval(toolsProbe,CFG.pollShort);
+  baitProbe();
+
+})();
+</script>
+
 
 </body>
 </html>
