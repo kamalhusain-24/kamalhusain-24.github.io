@@ -1,1 +1,470 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro ID Card Maker - Dynamic Fields, Colors, Photos & Size</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .card-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .control-panel {
+            flex: 1;
+            min-width: 450px;
+        }
+
+        .control-panel h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .settings-group {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .settings-group label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Text Field Grid */
+        .field-controls {
+            display: grid;
+            grid-template-columns: 2fr 35px 2fr 35px 45px 50px 50px 35px;
+            gap: 5px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        /* Photo & Size Control Grid */
+        .photo-controls {
+            display: grid;
+            grid-template-columns: 1fr 50px 50px 50px 50px;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .size-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .field-controls input, .field-controls select, .photo-controls input, .size-controls input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="color"] {
+            padding: 0;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .header-row {
+            font-weight: bold;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn-add {
+            background-color: #17a2b8;
+            color: white; border: none; padding: 6px 12px;
+            font-size: 13px; border-radius: 4px; cursor: pointer;
+            margin-bottom: 10px; font-weight: bold;
+        }
+        .btn-add:hover { background-color: #138496; }
+
+        .btn-remove {
+            background-color: #dc3545;
+            color: white; border: none; padding: 5px;
+            font-size: 12px; border-radius: 4px; cursor: pointer;
+        }
+        .btn-remove:hover { background-color: #c82333; }
+
+        .btn-print {
+            background-color: #28a745;
+            color: white; border: none; padding: 12px 20px;
+            font-size: 16px; border-radius: 5px; cursor: pointer;
+            width: 100%; font-weight: bold; margin-top: 10px;
+        }
+        .btn-print:hover { background-color: #218838; }
+
+        /* General Inputs */
+        input[type="file"], select { width: 100%; margin-bottom: 10px; }
+
+        /* Card Container Setups */
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-wrapper {
+            position: relative;
+            background-color: #fff;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 1px solid #888;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Dimensions */
+        .landscape-card { width: 3.2in; height: 2.1in; }
+        .portrait-card { width: 2.1in; height: 3.2in; }
+
+        /* Dynamic Field Styling */
+        .dynamic-field {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            gap: 5px;
+            z-index: 2; /* Text over photo */
+        }
+        .dynamic-field .lbl { font-weight: bold; }
+        .dynamic-field .val { font-weight: bold; }
+
+        /* Print Specifics */
+        @media print {
+            @page { size: A4; margin: 0; }
+            body {
+                background: none; margin: 0; padding: 0;
+                width: 100vw; height: 100vh;
+                display: flex !important; justify-content: center !important; align-items: center !important;
+            }
+            .hide-on-print { display: none !important; }
+            .card-section {
+                box-shadow: none; border: none; padding: 0;
+                background: transparent; justify-content: center;
+            }
+            .control-panel, h2, h3 { display: none; }
+            .card-wrapper { border: none; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body id="printBody">
+
+    <!-- SECTION 1: LANDSCAPE CARD -->
+    <div class="card-section" id="sectionL">
+        <div class="control-panel">
+            <h2>1. Landscape Card Maker</h2>
+            
+            <div class="settings-group">
+                <label>Card Dimensions (Inches)</label>
+                <div class="size-controls header-row">
+                    <span>Width (in)</span><span>Height (in)</span>
+                </div>
+                <div class="size-controls">
+                    <input type="number" step="0.1" id="cardWL" value="3.2" oninput="updateCardSize('L')" title="Card Width">
+                    <input type="number" step="0.1" id="cardHL" value="2.1" oninput="updateCardSize('L')" title="Card Height">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Upload Background Image & Select Language</label>
+                <input type="file" id="bgUploaderL" accept="image/*">
+                <select id="dirL" onchange="updateCard('L')">
+                    <option value="ltr">English / Bengali (Left-to-Right)</option>
+                    <option value="rtl" selected>Arabic (Right-to-Left)</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label>Student Photo (Optional - 30x40mm Default)</label>
+                <div class="photo-controls header-row">
+                    <span>Choose Photo</span><span>Width</span><span>Height</span><span>X Pos</span><span>Y Pos</span>
+                </div>
+                <div class="photo-controls">
+                    <input type="file" id="photoUploaderL" accept="image/*">
+                    <input type="number" id="photoWL" value="113" oninput="updateCard('L')" title="Width (px)">
+                    <input type="number" id="photoHL" value="151" oninput="updateCard('L')" title="Height (px)">
+                    <input type="number" id="photoXL" value="10" oninput="updateCard('L')" title="Left X Position">
+                    <input type="number" id="photoYL" value="10" oninput="updateCard('L')" title="Top Y Position">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Dynamic Fields & Colors</label>
+                <button class="btn-add" onclick="addRow('L')">➕ Add New Line</button>
+                <div class="field-controls header-row">
+                    <span>Label</span><span>🎨</span><span>Value</span><span>🎨</span><span>Px</span><span>X</span><span>Y</span><span>Del</span>
+                </div>
+                <div id="fieldsContainerL"></div>
+            </div>
+            <button class="btn-print" onclick="triggerPrint('sectionL')">🖨️ Print Landscape Card</button>
+        </div>
+        <div class="preview-area">
+            <h3>Live Preview</h3>
+            <div class="card-wrapper landscape-card" id="cardAreaL"></div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: PORTRAIT CARD -->
+    <div class="card-section" id="sectionP">
+        <div class="control-panel">
+            <h2>2. Portrait Card Maker</h2>
+            
+            <div class="settings-group">
+                <label>Card Dimensions (Inches)</label>
+                <div class="size-controls header-row">
+                    <span>Width (in)</span><span>Height (in)</span>
+                </div>
+                <div class="size-controls">
+                    <input type="number" step="0.1" id="cardWP" value="2.1" oninput="updateCardSize('P')" title="Card Width">
+                    <input type="number" step="0.1" id="cardHP" value="3.2" oninput="updateCardSize('P')" title="Card Height">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Upload Background Image & Select Language</label>
+                <input type="file" id="bgUploaderP" accept="image/*">
+                <select id="dirP" onchange="updateCard('P')">
+                    <option value="ltr">English / Bengali (Left-to-Right)</option>
+                    <option value="rtl" selected>Arabic (Right-to-Left)</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label>Student Photo (Optional - 30x40mm Default)</label>
+                <div class="photo-controls header-row">
+                    <span>Choose Photo</span><span>Width</span><span>Height</span><span>X Pos</span><span>Y Pos</span>
+                </div>
+                <div class="photo-controls">
+                    <input type="file" id="photoUploaderP" accept="image/*">
+                    <input type="number" id="photoWP" value="113" oninput="updateCard('P')" title="Width (px)">
+                    <input type="number" id="photoHP" value="151" oninput="updateCard('P')" title="Height (px)">
+                    <input type="number" id="photoXP" value="45" oninput="updateCard('P')" title="Left X Position">
+                    <input type="number" id="photoYP" value="10" oninput="updateCard('P')" title="Top Y Position">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Dynamic Fields & Colors</label>
+                <button class="btn-add" onclick="addRow('P')">➕ Add New Line</button>
+                <div class="field-controls header-row">
+                    <span>Label</span><span>🎨</span><span>Value</span><span>🎨</span><span>Px</span><span>X</span><span>Y</span><span>Del</span>
+                </div>
+                <div id="fieldsContainerP"></div>
+            </div>
+            <button class="btn-print" onclick="triggerPrint('sectionP')">🖨️ Print Portrait Card</button>
+        </div>
+        <div class="preview-area">
+            <h3>Live Preview</h3>
+            <div class="card-wrapper portrait-card" id="cardAreaP"></div>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = { L: 1, P: 1 };
+        let studentPhotos = { L: null, P: null };
+
+        // Handle Background Image Uploads
+        document.getElementById('bgUploaderL').addEventListener('change', e => loadBgImage(e, 'cardAreaL'));
+        document.getElementById('bgUploaderP').addEventListener('change', e => loadBgImage(e, 'cardAreaP'));
+
+        // Handle Student Photo Uploads
+        document.getElementById('photoUploaderL').addEventListener('change', e => loadStudentPhoto(e, 'L'));
+        document.getElementById('photoUploaderP').addEventListener('change', e => loadStudentPhoto(e, 'P'));
+
+        function loadBgImage(event, targetId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => document.getElementById(targetId).style.backgroundImage = `url('${e.target.result}')`;
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadStudentPhoto(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    studentPhotos[type] = e.target.result;
+                    updateCard(type);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                studentPhotos[type] = null;
+                updateCard(type);
+            }
+        }
+        
+        // Update Card Physical Size Dynamically
+        function updateCardSize(type) {
+            const w = document.getElementById(`cardW${type}`).value;
+            const h = document.getElementById(`cardH${type}`).value;
+            const cardArea = document.getElementById(`cardArea${type}`);
+            
+            cardArea.style.width = `${w}in`;
+            cardArea.style.height = `${h}in`;
+        }
+
+        // Add a new row dynamically
+        function addRow(type, defaultLabel = "", lblCol = "#b03a73", valCol = "#333333", size, xPos, yPos) {
+            const container = document.getElementById(`fieldsContainer${type}`);
+            const id = rowCounter[type]++;
+            
+            size = size !== undefined ? size : (type === 'L' ? 15 : 12);
+            xPos = xPos !== undefined ? xPos : (type === 'L' ? 194 : 110);
+            yPos = yPos !== undefined ? yPos : 60;
+            
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'field-controls';
+            rowDiv.id = `row${type}${id}`;
+            
+            rowDiv.innerHTML = `
+                <input type="text" id="lbl${type}${id}" value="${defaultLabel}" placeholder="Label" oninput="updateCard('${type}')">
+                <input type="color" id="lblCol${type}${id}" value="${lblCol}" oninput="updateCard('${type}')" title="Label Color">
+                
+                <input type="text" id="val${type}${id}" placeholder="Value" oninput="updateCard('${type}')">
+                <input type="color" id="valCol${type}${id}" value="${valCol}" oninput="updateCard('${type}')" title="Value Color">
+                
+                <input type="number" id="size${type}${id}" value="${size}" oninput="updateCard('${type}')" title="Font Size">
+                <input type="number" id="x${type}${id}" value="${xPos}" oninput="updateCard('${type}')" title="Left (X Position)">
+                <input type="number" id="y${type}${id}" value="${yPos}" oninput="updateCard('${type}')" title="Top (Y Position)">
+                
+                <button class="btn-remove" onclick="removeRow('${type}', ${id})" title="Delete Line">❌</button>
+            `;
+            container.appendChild(rowDiv);
+            updateCard(type);
+        }
+
+        // Remove a specific row
+        function removeRow(type, id) {
+            document.getElementById(`row${type}${id}`).remove();
+            updateCard(type);
+        }
+
+        // Live Update Card View
+        function updateCard(type) {
+            const cardArea = document.getElementById(`cardArea${type}`);
+            const textDir = document.getElementById(`dir${type}`).value;
+            cardArea.innerHTML = ''; 
+
+            if (studentPhotos[type]) {
+                const w = document.getElementById(`photoW${type}`).value;
+                const h = document.getElementById(`photoH${type}`).value;
+                const x = document.getElementById(`photoX${type}`).value;
+                const y = document.getElementById(`photoY${type}`).value;
+
+                const img = document.createElement('img');
+                img.src = studentPhotos[type];
+                img.style.position = 'absolute';
+                img.style.width = `${w}px`;
+                img.style.height = `${h}px`;
+                img.style.left = `${x}px`;
+                img.style.top = `${y}px`;
+                img.style.border = '2px solid #333'; 
+                img.style.boxSizing = 'border-box';
+                img.style.objectFit = 'cover';
+                img.style.zIndex = '1';
+                cardArea.appendChild(img);
+            }
+
+            const container = document.getElementById(`fieldsContainer${type}`);
+            const rows = container.children;
+
+            for (let row of rows) {
+                const idMatch = row.id.match(new RegExp(`row${type}(\\d+)`));
+                if(!idMatch) continue;
+                const id = idMatch[1];
+
+                const label = document.getElementById(`lbl${type}${id}`).value;
+                const val = document.getElementById(`val${type}${id}`).value;
+                const size = document.getElementById(`size${type}${id}`).value;
+                const xPos = document.getElementById(`x${type}${id}`).value;
+                const yPos = document.getElementById(`y${type}${id}`).value;
+                const lblCol = document.getElementById(`lblCol${type}${id}`).value;
+                const valCol = document.getElementById(`valCol${type}${id}`).value;
+
+                if (label || val) {
+                    const div = document.createElement('div');
+                    div.className = 'dynamic-field';
+                    div.style.fontSize = `${size}px`;
+                    div.style.left = `${xPos}px`;
+                    div.style.top = `${yPos}px`;
+                    div.setAttribute('dir', textDir);
+
+                    div.innerHTML = `
+                        <span class="lbl" style="color: ${lblCol};">${label}</span> 
+                        <span class="val" style="color: ${valCol};">${val}</span>
+                    `;
+                    cardArea.appendChild(div);
+                }
+            }
+        }
+
+        // Smart Print
+        function triggerPrint(targetSectionId) {
+            document.querySelectorAll('.card-section').forEach(sec => {
+                if (sec.id !== targetSectionId) sec.classList.add('hide-on-print');
+            });
+            window.print();
+            setTimeout(() => {
+                document.querySelectorAll('.card-section').forEach(sec => sec.classList.remove('hide-on-print'));
+            }, 500);
+        }
+
+        window.onload = () => { 
+            // Landscape default rows
+            addRow('L', ': اسم الطالب', '#ff0000', '#333333', 15, 194, 60);
+            addRow('L', ': رقم الهاتف', '#a03050', '#333333', 15, 194, 85);
+            addRow('L', ': الصف', '#a03050', '#333333', 15, 194, 102);
+            addRow('L', ': اسم المدرسة', '#a03050', '#333333', 14, 194, 119);
+            addRow('L', ': سائق الحافلة', '#a03050', '#333333', 13, 194, 139);
+            
+            // Portrait default rows
+            addRow('P', ': اسم الطالب', '#ff0000', '#333333', 12, 109, 94);
+            addRow('P', ': رقم الهاتف', '#a03050', '#333333', 12, 110, 116);
+            addRow('P', ': الصف', '#a03050', '#333333', 12, 110, 134);
+            addRow('P', ': اسم المدرسة', '#a03050', '#333333', 12, 110, 154);
+            addRow('P', ': سائق الحافلة', '#a03050', '#333333', 12, 108, 176);
+        };
+    </script>
+</body>
+</html>
